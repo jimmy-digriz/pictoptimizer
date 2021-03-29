@@ -1,0 +1,23 @@
+{
+    "name": "saa/pictoptimizer",
+    "description": "Ресайз и оптимизация изображений",
+    "keywords": ["bitrix", "Битрикс", "d7", "модуль"],
+    "type": "bitrix-module",
+    "license": "MIT",
+    "support": {
+        "www": "https://www.100up.ru",
+        "source": "https://github.com/jimmy-digriz/pictoptimizer"
+    },
+    "authors": [
+        {
+            "name": "Aleksandr Sergeev",
+            "email": "sergeev@100up.ru"
+        }
+    ],
+    "extra": {
+        "module_name": "saa.pict_optimize"
+    },
+    "require": {
+        "jorique/bitrix-installer": "^0.1.1"
+    }
+}
