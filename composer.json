@@ -1,5 +1,5 @@
 {
-    "name": "saa/pictoptimizer",
+    "name": "digriz/pictoptimizer",
     "description": "Ресайз и оптимизация изображений",
     "keywords": ["bitrix", "Битрикс", "d7", "модуль"],
     "type": "bitrix-module",
