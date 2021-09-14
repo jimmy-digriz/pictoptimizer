@@ -18,6 +18,6 @@
         "module_name": "saa.pict_optimize"
     },
     "require": {
-        "jorique/bitrix-installer": "^0.1.1"
+        "jorique/bitrix-installer": "^0.2"
     }
 }

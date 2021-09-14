@@ -25,10 +25,13 @@ class EventHandler
         &$cacheImageFileTmp
     ) {
         if (ModuleControl::isModuleEnabled()) {
+
             $GLOBALS['resizeStart'] = microtime(true);
 
-            $needResize = false; // запрещаем ресайз
-            return true; // обрываем цепочку обработчиков
+            if(!ModuleControl::isOptionsWithWatermark($options)){
+                $needResize = false; // запрещаем ресайз
+                return true; // обрываем цепочку обработчиков
+            }
         }
     }
 
@@ -41,6 +44,7 @@ class EventHandler
         &$arImageSize // ?? тут пусто
     ) {
         if(ModuleControl::isModuleEnabled()){
+            $resizeResult = null;
             $fileTo = $cacheImageFileTmp;
             $fileFrom = $_SERVER['DOCUMENT_ROOT'].$file['SRC'];
 
@@ -53,32 +57,40 @@ class EventHandler
                 $resizeY = min($options[0]['width'], $options[0]['height']);
             }
 
-            if ( ! empty($fileTo) && CliTools::makeDirForFile($fileTo)) {
-                if(copy($fileFrom, $fileTo)){
-                    $rf = new ResizerFactory();
-                    $resizer = $rf->getResizer();
-                    if (is_object($resizer)) {
-                        // внимание. работаем только с конечным файлом, не с исходником
-                        $resizeResult = $resizer->resize($fileTo, $fileTo, $resizeX, $resizeY, $resizeType);
-                        if ($resizeResult && ModuleControl::isOptimizeEnabled()) {
-                            $of = new OptimizerFactory();
-                            $optimizer = $of->getOptimizer($file['CONTENT_TYPE']);
-                            if (is_object($optimizer)) {
-                                // внимание. работаем только с конечным файлом, не с исходником
-                                $optimizer->optimize($fileTo, $fileTo);
-                            }
+            // если использовался вотермарк, то ресайз был системный; наш не нужен
+            $alreadyUseBitrixResize = ModuleControl::isOptionsWithWatermark($options);
+            if(!$alreadyUseBitrixResize) {
+                if (!empty($fileTo) && CliTools::makeDirForFile($fileTo)) {
+                    if (copy($fileFrom, $fileTo)) {
+                        $rf = new ResizerFactory();
+                        $resizer = $rf->getResizer();
+                        if (is_object($resizer)) {
+                            // внимание. работаем только с конечным файлом, не с исходником
+                            $resizeResult = $resizer->resize($fileTo, $fileTo, $resizeX, $resizeY, $resizeType);
                         }
 
-                        //todo куда-то это деть
-                        $resizeTime = microtime(true) - $GLOBALS['resizeStart'];
+                        // дополнительно - если ресайзили, то необходимо поправить тот самый путь к файлу-результату
+                        // который собирается вернуть ResizeImageGet
+                        // потому что в нем сейчас неизменненное изображение, т.к. выше мы отменяли битрикосвый ресайз
+                        $cacheImageFile = str_replace($_SERVER['DOCUMENT_ROOT'], '', $fileTo);
                     }
-
-                    // дополнительно - если ресайзили, то необходимо поправить тот самый путь к файлу-результату
-                    // который собирается вернуть ResizeImageGet
-                    // потому что в нем сейчас неизменненное изображение, т.к. выше мы отменяли битрикосвый ресайз
-                    $cacheImageFile = str_replace($_SERVER['DOCUMENT_ROOT'], '', $fileTo);
                 }
             }
+
+            // оптимизация теперь может быть запущена отдельно от ресайза
+            if (($resizeResult || $alreadyUseBitrixResize) && ModuleControl::isOptimizeEnabled()) {
+                if(!empty($fileTo)){
+                    $of = new OptimizerFactory();
+                    $optimizer = $of->getOptimizer($file['CONTENT_TYPE']);
+                    if (is_object($optimizer)) {
+                        // внимание. работаем только с конечным файлом, не с исходником
+                        $optimizer->optimize($fileTo, $fileTo);
+                    }
+                }
+            }
+
+            //todo куда-то это деть
+            $resizeTime = microtime(true) - $GLOBALS['resizeStart'];
 
             // todo есть мысль, что если что-то сломалось в процессе, то следует сделать так, чтобы результат ресайза вернуслся пустой. Либо вернул исходник
         }

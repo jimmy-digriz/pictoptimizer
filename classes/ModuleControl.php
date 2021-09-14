@@ -85,7 +85,7 @@ class ModuleControl
      * @return bool
      * @throws \Bitrix\Main\ArgumentNullException
      */
-    static public function isModuleEnabled()
+    public static function isModuleEnabled()
     {
         $isEnabled = false;
         $moduleEnabledOption = Option::get(self::MODULE_ID, 'enabled', '0');
@@ -93,5 +93,27 @@ class ModuleControl
             $isEnabled = true;
         }
         return $isEnabled;
+    }
+
+    /**
+     * проверка используемых опций ресайза на предмет водяных знаков. если используется водяной знак, то отключать встроенный ресайз нельзя
+     * @param $options
+     *
+     * @return bool
+     */
+    public static function isOptionsWithWatermark($options)
+    {
+        $res = false;
+        // $options, //array($arSize, $resizeType, array(), false, $arFilters, $bImmediate)
+        if(!empty($oneOption[4]) && is_array($options[4])){
+            foreach($options[4] as $oneOption){
+                if($oneOption['name'] == 'watermark'){
+                    $res = true;
+                    break;
+                }
+            }
+        }
+
+        return $res;
     }
 }
