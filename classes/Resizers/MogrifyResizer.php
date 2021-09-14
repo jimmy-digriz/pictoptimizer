@@ -3,6 +3,7 @@ namespace Saa\Pictoptimizer\Resizers;
 
 use Saa\Pictoptimizer\CliTools;
 use Saa\Pictoptimizer\AbstractResizer;
+use Saa\Pictoptimizer\ModuleControl;
 
 class MogrifyResizer extends AbstractResizer
 {
@@ -19,7 +20,7 @@ class MogrifyResizer extends AbstractResizer
         }
 
         $command = 'mogrify '.$resize.' \'' . $outputFile . '\'';
-        \Bitrix\Main\Diag\Debug::writeToFile('resizer command:' . $command);
+        ModuleControl::writeLog('resizer command:' . $command);
         $result = CliTools::execSyncro($command);
         return $result;
     }
