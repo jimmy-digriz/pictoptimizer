@@ -4,6 +4,7 @@ namespace Saa\Pictoptimizer\Optimizers;
 
 use \Saa\Pictoptimizer\CliTools;
 use \Saa\Pictoptimizer\AbstractOptimizer;
+use Saa\Pictoptimizer\ModuleControl;
 
 class PngquantOptimizer extends AbstractOptimizer
 {
@@ -20,7 +21,7 @@ class PngquantOptimizer extends AbstractOptimizer
     public function optimize($inputFile, $outputFile, $async = true)
     {
         $command = 'pngquant --quality 60-90 --force --speed 3 --output \'' . $outputFile . '\' \'' . $outputFile . '\'';
-        \Bitrix\Main\Diag\Debug::writeToFile('optimizer command:' . $command);
+        ModuleControl::writeLog('optimizer command:' . $command);
         if ($async) {
             CliTools::execAsync($command, true);
         } else {

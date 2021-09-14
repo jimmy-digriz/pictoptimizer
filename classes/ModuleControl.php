@@ -96,6 +96,36 @@ class ModuleControl
     }
 
     /**
+     * включено ли логирование
+     * @return bool
+     * @throws \Bitrix\Main\ArgumentNullException
+     */
+    public static function isLoggingEnabled()
+    {
+        $isLogging = false;
+        $loggingEnabledOption = Option::get(self::MODULE_ID, 'logging', '0');
+        if($loggingEnabledOption == 1){
+            $isLogging = true;
+        }
+        return $isLogging;
+    }
+
+    /**
+     * пишем лог
+     * @param $text
+     *
+     * @return null
+     * @throws \Bitrix\Main\ArgumentNullException
+     */
+    public static function writeLog($text)
+    {
+        if(self::isLoggingEnabled()){
+            \Bitrix\Main\Diag\Debug::writeToFile($text);
+        }
+        return null;
+    }
+
+    /**
      * проверка используемых опций ресайза на предмет водяных знаков. если используется водяной знак, то отключать встроенный ресайз нельзя
      * @param $options
      *

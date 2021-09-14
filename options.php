@@ -24,6 +24,7 @@ if ($RIGHT_R) {
     if ($REQUEST_METHOD == 'POST'&& $RIGHT_W && check_bitrix_sessid()) {
 		# сохраняем
 		Option::set($module_id, 'enabled', $_POST['enabled']?$_POST['enabled']:'0');
+        Option::set($module_id, 'logging', $_POST['logging']?$_POST['logging']:'0');
 
 		$ex = $APPLICATION->GetException();
 		if ($ex) {
@@ -37,6 +38,7 @@ if ($RIGHT_R) {
 
     $currentOptions = Option::getForModule($module_id);
 	$enabled = $currentOptions['enabled'] == 1;
+    $logging = $currentOptions['logging'] == 1;
 
     $aTabs = [
         ['DIV' => 'edit1', 'TAB' => 'Настройки', 'ICON' => '', 'TITLE' => 'Настройки'],
@@ -57,7 +59,7 @@ if ($RIGHT_R) {
 					<input type="checkbox" id="is_enabled" name="enabled" value="1"<?= $enabled ? ' checked' : '' ?>>
 				</td>
 			</tr>
-			<td>
+			<tr>
 				<td colspan="2">
                 <?php
                 $config = \Saa\Pictoptimizer\ModuleControl::getCurrentConfiguration();
@@ -71,6 +73,12 @@ if ($RIGHT_R) {
 				<input type="submit" class="adm-btn-save" name="save" value="Сохранить">
 				</td>
 			</tr>
+            <tr>
+                <td><label for="is_logging">Логирование:</label></td>
+                <td>
+                    <input type="checkbox" id="is_logging" name="logging" value="1"<?= $logging ? ' checked' : '' ?>>
+                </td>
+            </tr>
         <? $tabControl->End(); ?>
 	</form>
     <?php

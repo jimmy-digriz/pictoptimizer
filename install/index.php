@@ -51,6 +51,7 @@ class saa_pict_optimize extends CModule
     {
         // заносим дефолтные значения в опции
         Option::set($this->MODULE_ID, 'enabled', '1');
+        Option::set($this->MODULE_ID, 'logging', '0');
     }
 
     private function removeOptions() {
