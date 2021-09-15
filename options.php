@@ -59,8 +59,14 @@ if ($RIGHT_R) {
 					<input type="checkbox" id="is_enabled" name="enabled" value="1"<?= $enabled ? ' checked' : '' ?>>
 				</td>
 			</tr>
+            <tr>
+                <td><label for="is_logging">Логирование:</label></td>
+                <td>
+                    <input type="checkbox" id="is_logging" name="logging" value="1"<?= $logging ? ' checked' : '' ?>>
+                </td>
+            </tr>
 			<tr>
-				<td colspan="2">
+				<td>
                 <?php
                 $config = \Saa\Pictoptimizer\ModuleControl::getCurrentConfiguration();
                 if(!empty($config['optimizer'])){
@@ -72,13 +78,8 @@ if ($RIGHT_R) {
                 ?>
 				<input type="submit" class="adm-btn-save" name="save" value="Сохранить">
 				</td>
+                <td></td>
 			</tr>
-            <tr>
-                <td><label for="is_logging">Логирование:</label></td>
-                <td>
-                    <input type="checkbox" id="is_logging" name="logging" value="1"<?= $logging ? ' checked' : '' ?>>
-                </td>
-            </tr>
         <? $tabControl->End(); ?>
 	</form>
     <?php
