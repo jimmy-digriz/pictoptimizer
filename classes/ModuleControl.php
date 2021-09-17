@@ -135,7 +135,7 @@ class ModuleControl
     {
         $res = false;
         // $options, //array($arSize, $resizeType, array(), false, $arFilters, $bImmediate)
-        if(!empty($oneOption[4]) && is_array($options[4])){
+        if(!empty($options[4]) && is_array($options[4])){
             foreach($options[4] as $oneOption){
                 if($oneOption['name'] == 'watermark'){
                     $res = true;
